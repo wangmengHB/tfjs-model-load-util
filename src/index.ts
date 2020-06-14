@@ -1,5 +1,6 @@
 
 import cache from './cache';
+import * as tf from '@tensorflow/tfjs';
 
 const indexedDBSupported = !!(
   window.indexedDB || 
@@ -9,21 +10,22 @@ const indexedDBSupported = !!(
 );
 
 
-async function loadAndStoreArtifact(modelUrl: string, modelName: string) {
-  const artifacts = await cache.fetchArtifactsFromUrl(modelUrl);
+export async function fetchAndStoreArtifact(modelUrl: string, modelName: string): Promise<tf.io.ModelArtifacts> {
+  const artifacts: tf.io.ModelArtifacts  = await cache.fetchArtifactsFromUrl(modelUrl);
   await cache.storeAction(artifacts, modelName);
-  const model = await cache.loadAction(modelName);
+  const model: tf.io.ModelArtifacts = await cache.loadAction(modelName);
   return model;
 }
   
 
-export async function loadArtifactFromCache(modelUrl: string, modelName: string) {
+export async function loadArtifactFromCache(modelUrl: string, modelName: string): Promise<tf.io.ModelArtifacts> {
   if (!indexedDBSupported) {
+    console.error('indexedDB is not supported, cache mechanism failed.');
     return await cache.fetchArtifactsFromUrl(modelUrl);
   }
   let artifacts = await cache.loadAction(modelName);
   if (!artifacts) {
-    artifacts = await loadAndStoreArtifact(modelUrl, modelName);
+    artifacts = await fetchAndStoreArtifact(modelUrl, modelName);
   }
   if (!artifacts) {
     throw new Error('failed to get model.');
@@ -31,16 +33,16 @@ export async function loadArtifactFromCache(modelUrl: string, modelName: string)
   return artifacts;
 }
 
-export function createCustomLoader(modelUrl: string, modelName: string) {
+export function createCustomLoader(modelUrl: string, modelName: string): tf.io.IOHandler {
   return {
-    load: async () => {
+    load: async (): Promise<tf.io.ModelArtifacts>  => {
       if (!indexedDBSupported) {
-        return await cache.fetchArtifactsFromUrl(modelUrl);
+        return await cache.fetchArtifactsFromUrl(modelUrl) ;
       }
-      let modelArtifact  = await loadArtifactFromCache(modelUrl, modelName);
+      let modelArtifact: tf.io.ModelArtifacts  = await loadArtifactFromCache(modelUrl, modelName);
       return modelArtifact;
     }
-  }
+  };
 
 }
 

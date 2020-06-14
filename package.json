@@ -1,6 +1,6 @@
 {
   "name": "tfjs-model-load-util",
-  "version": "0.0.0-rc.1",
+  "version": "0.0.0-rc.2",
   "description": "utilities function for load tfjs models from browser cache",
   "main": "lib/index.js",
   "module": "lib/index.js",

@@ -9,18 +9,12 @@ const MAX_CHUNCK_SIZE = 500000000; // 50MB
 export default {
   db: null,
 
-  async fetchArtifactsFromUrl(url: string) {
+  async fetchArtifactsFromUrl(url: string): Promise<tf.io.ModelArtifacts> {
     const loadHandlers = tf.io.getLoadHandlers(url);
-    const modelArtifacts = await loadHandlers[0].load();
+    const modelArtifacts: tf.io.ModelArtifacts = await loadHandlers[0].load();
     return modelArtifacts;
   },
 
-  async _getModelArtifacts(url: string) {
-    const loadHandlers = tf.io.getLoadHandlers(url);
-    const modelArtifacts = await loadHandlers[0].load();
-
-    return modelArtifacts;
-  },
 
   async storeAction(modelArtifacts: tf.io.ModelArtifacts, path: string) {
     this.db = await utils.openDatabase();
