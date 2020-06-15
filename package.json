@@ -1,10 +1,10 @@
 {
   "name": "tfjs-model-load-util",
-  "version": "0.0.0-rc.2",
+  "version": "0.0.1",
   "description": "utilities function for load tfjs models from browser cache",
   "main": "lib/index.js",
-  "module": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "module": "esm/index.js",
+  "typings": "esm/index.d.ts",
   "files": [
     "lib",
     "esm"
@@ -12,7 +12,7 @@
   "scripts": {
     "build:commonjs": "rm -rf lib && tsc --module 'CommonJS' --outDir './lib'",
     "build:esm": "rm -rf esm && tsc --target 'ESNext' --module 'ESNext' --outDir './esm'",
-    "build": "npm run build:commonjs",
+    "build": "npm run build:commonjs && npm run build:esm",
     "prepublish": "npm run build"
   },
   "repository": {
